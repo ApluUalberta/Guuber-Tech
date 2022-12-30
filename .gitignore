@@ -1,4 +1,4 @@
-./gt-frontend/node_modules/
+gt-frontend/node_modules/
 .expo/
 dist/
 npm-debug.*
