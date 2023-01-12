@@ -12,3 +12,8 @@ web-build/
 
 # macOS
 .DS_Store
+
+# Python Artifacts
+__pycache__/
+*.py[cod]
+venv/
