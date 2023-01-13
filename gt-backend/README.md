@@ -2,6 +2,14 @@
 
 These docs are for Jacob to get him up to speed.
 
+## Usage
+
+To start the server run:
+
+```
+uvicorn blog_api:app --reload
+```
+
 ## Setup
 
 ```bash
@@ -11,4 +19,5 @@ python -m venv venv
 pip install -r requirements.txt
 python -m blog_api
 ```
+
 
