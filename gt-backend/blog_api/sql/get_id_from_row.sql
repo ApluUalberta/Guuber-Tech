@@ -1,0 +1,1 @@
+SELECT id FROM blogs WHERE rowid = ?

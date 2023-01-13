@@ -1,12 +1,16 @@
 __all__ = ["connect"]
 
-import sqlite3
 import datetime
+import logging
 import os
+import sqlite3
+from functools import wraps
 from pathlib import Path
 
 from . import sql, config, models
-    
+
+logger = logging.getLogger(__name__)
+
 def adapt_datetime_iso(val):
     """Adapt datetime.date to ISO 8601 date."""
     return val.isoformat()
@@ -21,7 +25,7 @@ def adapt_bool(val):
 
 def convert_bool(val):
     """Convert an integer back to a boolean."""
-    return bool(val.decode())
+    return bool(int(val.decode()))
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
@@ -43,6 +47,21 @@ def delete():
         os.remove(config.DB_PATH)
         
 
+class DatabaseException(Exception):
+    pass
+        
+def raise_db_exception(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception:
+            logger.exception("Database error raised.")
+            msg = f"DB Error raised from {f.__name__}"
+            raise DatabaseException(msg)
+    return wrapper
+
+
 class DB:
     def __init__(self):
         if not config.DB_PATH.exists():
@@ -52,34 +71,41 @@ class DB:
         )
         self.conn.row_factory = dict_factory
 
+    @raise_db_exception
     def add_blog(self, blog: models.Blog):
         with self.conn:
-            self.conn.execute(sql.commands.add_blog, blog.dict())
+            cur = self.conn.execute(sql.commands.add_blog, blog.dict())
+            return self.conn.execute(sql.commands.get_id_from_row, (cur.lastrowid,)).fetchone()
+            
     
+    @raise_db_exception
     def get_all_blogs(self):
         with self.conn:
             query = self.conn.execute(sql.commands.fetch_all_blogs)
             return [models.Blog(**q) for q in query.fetchall()]
 
+    @raise_db_exception
     def get_blog_by_id(self, id_: int):
         with self.conn:
             query = self.conn.execute(sql.commands.fetch_blog_by_id, (id_,))
             return models.Blog(**query.fetchone())
 
-    def delete_blog_by_id(self, id_: int)
+    @raise_db_exception
+    def delete_blog_by_id(self, id_: int):
         with self.conn:
             self.conn.execute(sql.commands.delete_blog_by_id, (id_,))
 
-    def update_blog(self, blog: models.blog):
+    @raise_db_exception
+    def update_blog(self, blog: models.Blog):
         with self.conn:
             self.conn.execute(sql.commands.update_blog_by_id, blog.dict())
 
-    def get_title_to_id_dict(self):
+    @raise_db_exception
+    def get_title_mapping(self):
         with self.conn:
             query = self.conn.execute(sql.commands.fetch_title_and_id)
-            return dict(query.fetchall())
-
-
+            title_mapping = {r["title"].lower().replace(" ", "-"): r["id"] for r in query.fetchall()}
+            return title_mapping
 
 
 def connect():

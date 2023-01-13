@@ -1,1 +1,1 @@
-SELECT (title, id) FROM blogs
+SELECT title, id FROM blogs
