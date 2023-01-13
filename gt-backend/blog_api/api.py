@@ -1,15 +1,22 @@
+from typing import List
+
 from fastapi import FastAPI
-from . import database
+
+from . import database, models
 
 app = FastAPI()
-db = database.create_database()
+db = database.connect()
 
-@app.get("/")
-def root():
-    return "Hello World"
+@app.get("/articles")
+async def get_articles() -> List[models.Blog]:
+    return db.get_all_blogs()
 
 
-@app.get("/article/{id}")
-def get_article_by_id(id: str):
-    ...
+@app.post("/articles")
+async def post_new_article(blog: models.Blog):
+    db.add_blog(blog)
+
+@app.post()
+ 
+
     
