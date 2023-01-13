@@ -2,9 +2,14 @@ from typing import List
 
 from fastapi import FastAPI, HTTPException
 
-from . import database, models
+from . import database, models, __version__
 
-app = FastAPI()
+app = FastAPI(
+    title="Guuber Tech",
+    description="""Rest API for the blog. It is very minimal by design. 
+    Please use with care. Contact Noah if you have and issues.""",
+    version=__version__)
+
 db = database.connect()
 
 @app.get("/articles")
@@ -14,7 +19,6 @@ async def get_articles() -> List[models.Blog]:
 
 @app.post("/articles", status_code=201)
 async def post_article(blog: models.Blog) -> None:
-    print(blog)
     return db.add_blog(blog)
 
 @app.get("/articles/{id}")
