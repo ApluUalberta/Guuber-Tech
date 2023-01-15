@@ -1,4 +1,5 @@
-gt-frontend/node_modules/
+# Javascript stuff
+node_modules/
 .expo/
 dist/
 npm-debug.*
