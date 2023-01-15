@@ -17,4 +17,7 @@ web-build/
 __pycache__/
 *.py[cod]
 venv/
+*.egg-info/
+
+# Databases
 *.db
