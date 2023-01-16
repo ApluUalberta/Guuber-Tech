@@ -1,4 +1,5 @@
-gt-frontend/node_modules/
+# Javascript stuff
+node_modules/
 .expo/
 dist/
 npm-debug.*
@@ -12,3 +13,12 @@ web-build/
 
 # macOS
 .DS_Store
+
+# Python Artifacts
+__pycache__/
+*.py[cod]
+venv/
+*.egg-info/
+
+# Databases
+*.db
