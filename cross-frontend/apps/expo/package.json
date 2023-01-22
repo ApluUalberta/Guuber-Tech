@@ -1,10 +1,13 @@
 {
   "dependencies": {
+    "@expo/webpack-config": "^0.17.4",
     "app": "*",
-    "expo": "46.0.13",
+    "expo": "^47.0.13",
+    "expo-cli": "^6.1.0",
     "expo-router": "0.0.31",
     "expo-splash-screen": "~0.16.1",
     "expo-status-bar": "~1.4.0",
+    "global": "^4.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.69.5",
